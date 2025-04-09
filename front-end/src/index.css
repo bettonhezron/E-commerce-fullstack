@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Style buttons universal */
+button {
+  @apply outline-none cursor-pointer;
+}
