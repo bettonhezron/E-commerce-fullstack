@@ -23,7 +23,7 @@ const Register: React.FC = () => {
   const validate = () => {
     const errors: { [key: string]: string } = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\+254\d{9}$/;
+    const phoneRegex = /^0\d{9}$/;
 
     if (!formData.firstName.trim()) errors.firstName = 'First name is required';
     if (!formData.lastName.trim()) errors.lastName = 'Last name is required';
@@ -33,7 +33,7 @@ const Register: React.FC = () => {
 
     if (!formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
     else if (!phoneRegex.test(formData.phoneNumber))
-      errors.phoneNumber = 'Use format +2547XXXXXXXX';
+      errors.phoneNumber = 'Use format 07XXXXXXXX';
 
     if (!formData.password) errors.password = 'Password is required';
     else if (formData.password.length < 6) errors.password = 'Must be at least 6 characters';
@@ -169,7 +169,7 @@ const Register: React.FC = () => {
                 id="phoneNumber"
                 name="phoneNumber"
                 type="text"
-                placeholder="+254712345678"
+                placeholder="07XXXXXXXX"
                 value={formData.phoneNumber}
                 onChange={handleChange}
                 className={`mt-1 block w-full px-3 py-2 border ${
