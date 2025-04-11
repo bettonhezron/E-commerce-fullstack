@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ShoppingCart, Search, Menu, Heart, User } from "lucide-react";
+import { ShoppingCart, Search, Menu, Heart, User, X, LogOut, Tag, Info, HelpCircle, ChevronDown, List, Package, Home, ShoppingBag, ChevronRight } from "lucide-react";
 import { Product } from "./types/Product";
 import { Category } from "./types/Category";
 import ProductSlider from "./components/ProductSlider";
@@ -8,7 +8,6 @@ import CategoryCard from "./components/CategoryCard";
 import Newsletter from "./components/Newsletter";
 import PageLoader from "../../components/Loader";
 import { getUser, isAuthenticated, logout } from "../../api/auth";
-
 
 
 // API fetching functions
@@ -293,6 +292,8 @@ const Homepage: React.FC = () => {
   // Add authentication state
   const [userAuthenticated, setUserAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  // Add mobile menu state
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Check authentication status when component mounts
@@ -331,160 +332,331 @@ const Homepage: React.FC = () => {
     logout();
     setUserAuthenticated(false);
     setCurrentUser(null);
-    // You might want to redirect to home or login page here
-    // window.location.href = '/';
+    // Close mobile menu if open
+    setMobileMenuOpen(false);
+  };
+
+  // Toggle mobile menu
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
   };
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4">
-          <div className="py-2 flex items-center justify-between border-b">
-            <div className="text-sm flex space-x-4 text-gray-600">
-              <a
-                href="#"
-                className="hover:text-green-600 transition duration-200"
-              >
-                Help
-              </a>
-              <a
-                href="#"
-                className="hover:text-green-600 transition duration-200"
-              >
-                Track Order
-              </a>
-              <a
-                href="#"
-                className="hover:text-green-600 transition duration-200"
-              >
-                Contact Us
-              </a>
+    {/* Header */}
+<header className="bg-white shadow-sm sticky top-0 z-50">
+  <div className="container mx-auto px-4">
+    {/* Top Bar - Hidden on Mobile */}
+    <div className="py-2 hidden md:flex items-center justify-between border-b">
+      <div className="text-sm flex space-x-6 text-gray-600">
+        <a href="#" className="hover:text-green-600 transition duration-200">Help</a>
+        <a href="#" className="hover:text-green-600 transition duration-200">Track Order</a>
+        <a href="#" className="hover:text-green-600 transition duration-200">Contact Us</a>
+      </div>
+      <div className="text-sm flex space-x-6 text-gray-600">
+        {userAuthenticated ? (
+          <>
+            <a href="/profile" className="hover:text-green-600 transition duration-200">My Profile</a>
+            <a href="/orders" className="hover:text-green-600 transition duration-200">My Orders</a>
+            <button onClick={handleLogout} className="hover:text-green-600 transition duration-200">
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            <a href="/signin" className="hover:text-green-600 transition duration-200">Sign In</a>
+            <a href="/register" className="hover:text-green-600 transition duration-200">Create Account</a>
+          </>
+        )}
+      </div>
+    </div>
+    
+    {/* Main Navigation */}
+    <div className="py-4 flex items-center justify-between">
+      <div className="flex items-center">
+        <button 
+          onClick={toggleMobileMenu}
+          className="mr-4 lg:hidden text-gray-700" 
+          aria-label="Toggle menu"
+        >
+          <Menu size={24} />
+        </button>
+        <a href="/" className="text-2xl font-bold text-green-600">
+          GreenShop
+        </a>
+      </div>
+      
+      {/* Desktop Navigation */}
+      <nav className="hidden lg:flex items-center">
+        <ul className="flex space-x-8">
+          <li>
+            <a href="/" className="font-medium text-gray-700 hover:text-green-600 transition duration-200">
+              Home
+            </a>
+          </li>
+          <li className="group relative">
+            <a href="/shop" className="font-medium text-gray-700 hover:text-green-600 transition duration-200 flex items-center">
+              Shop
+              <ChevronDown size={16} className="ml-1" />
+            </a>
+            {/* Shop Dropdown */}
+            <div className="absolute left-0 top-full bg-white shadow-lg border rounded-lg w-48 p-3 hidden group-hover:block z-50">
+              <ul className="space-y-2">
+                <li><a href="/shop/new-arrivals" className="block text-gray-700 hover:text-green-600">New Arrivals</a></li>
+                <li><a href="/shop/best-sellers" className="block text-gray-700 hover:text-green-600">Best Sellers</a></li>
+                <li><a href="/shop/sale" className="block text-gray-700 hover:text-green-600">Sale Items</a></li>
+              </ul>
             </div>
-            <div className="text-sm flex space-x-4 text-gray-600">
-              {userAuthenticated ? (
-                // Show these links when user is logged in
-                <>
-                  <span className="text-green-600">
-                    Welcome, {currentUser?.firstName || currentUser?.email}
-                  </span>
-                  <a
-                    href="/profile"
-                    className="hover:text-green-600 transition duration-200"
-                  >
-                    My Profile
-                  </a>
-                  <button
-                    onClick={handleLogout}
-                    className="hover:text-green-600 transition duration-200"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                // Show these links when user is not logged in
-                <>
-                  <a
-                    href="/signin"
-                    className="hover:text-green-600 transition duration-200"
-                  >
-                    Sign In
-                  </a>
-                  <a
-                    href="/register"
-                    className="hover:text-green-600 transition duration-200"
-                  >
-                    Create Account
-                  </a>
-                </>
-              )}
+          </li>
+          <li className="group relative">
+            <a href="/categories" className="font-medium text-gray-700 hover:text-green-600 transition duration-200 flex items-center">
+              Categories
+              <ChevronDown size={16} className="ml-1" />
+            </a>
+            {/* Categories Dropdown */}
+            <div className="absolute left-0 top-full bg-white shadow-lg border rounded-lg w-48 p-3 hidden group-hover:block z-50">
+              <ul className="space-y-2">
+                <li><a href="/category/electronics" className="block text-gray-700 hover:text-green-600">Electronics</a></li>
+                <li><a href="/category/clothing" className="block text-gray-700 hover:text-green-600">Clothing</a></li>
+                <li><a href="/category/home" className="block text-gray-700 hover:text-green-600">Home & Kitchen</a></li>
+                <li><a href="/category/books" className="block text-gray-700 hover:text-green-600">Books</a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <a href="/deals" className="font-medium text-gray-700 hover:text-green-600 transition duration-200">
+              Deals
+            </a>
+          </li>
+          <li>
+            <a href="/about" className="font-medium text-gray-700 hover:text-green-600 transition duration-200">
+              About
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div className="flex items-center space-x-5">
+        {/* Desktop Search */}
+        <div className="relative hidden md:block">
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="bg-gray-100 rounded-full py-2 px-4 pl-10 w-64 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition duration-200"
+          />
+          <Search className="absolute left-3 top-2.5 text-gray-500" size={18} />
+        </div>
+        
+        {/* User Account Button */}
+        <button className="text-gray-700 hover:text-green-600 transition duration-200">
+          {userAuthenticated ? (
+            <a href="/profile">
+              <User size={24} />
+            </a>
+          ) : (
+            <a href="/signin">
+              <User size={24} />
+            </a>
+          )}
+        </button>
+        
+        {/* Wishlist Button */}
+        <button className="text-gray-700 hover:text-green-600 transition duration-200">
+          <Heart size={24} />
+        </button>
+        
+        {/* Cart Button */}
+        <button className="relative text-gray-700 hover:text-green-600 transition duration-200">
+          <ShoppingCart size={24} />
+          <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            3
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  {/* Mobile Menu Overlay */}
+  {mobileMenuOpen && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden" onClick={toggleMobileMenu}>
+      <div className="bg-white h-full w-4/5 max-w-sm overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        {/* Header with close button */}
+        <div className="flex justify-between items-center p-4 border-b bg-gray-100">
+          <button onClick={toggleMobileMenu} className="text-gray-700">
+            <X size={20} />
+          </button>
+          <h2 className="text-lg font-bold text-green-600">GreenShop</h2>
+          <div className="w-5"></div> {/* Empty div for centering */}
+        </div>
+        
+        {/* User Account Section - Top */}
+        {userAuthenticated ? (
+          <div className="p-4 bg-green-50 border-b">
+            <div className="flex items-center mb-3">
+              <div className="bg-green-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                <User size={20} />
+              </div>
+              <div>
+                <p className="font-medium">{currentUser?.firstName || currentUser?.email}</p>
+                <a href="/profile" className="text-sm text-green-600">View Profile</a>
+              </div>
             </div>
           </div>
-          <div className="py-4 flex items-center justify-between">
-            <div className="flex items-center">
-              <Menu className="mr-4 lg:hidden text-gray-700" size={24} />
-              <a href="#" className="text-2xl font-bold text-green-600">
-                GreenShop
-              </a>
-            </div>
-            <div className="hidden lg:flex items-center space-x-8">
-              <a
-                href="#"
-                className="font-medium text-gray-900 hover:text-green-600 transition duration-200"
-              >
-                Home
-              </a>
-              <a
-                href="#"
-                className="font-medium text-gray-700 hover:text-green-600 transition duration-200"
-              >
-                Shop
-              </a>
-              <a
-                href="#"
-                className="font-medium text-gray-700 hover:text-green-600 transition duration-200"
-              >
-                Categories
-              </a>
-              <a
-                href="#"
-                className="font-medium text-gray-700 hover:text-green-600 transition duration-200"
-              >
-                Deals
-              </a>
-              <a
-                href="#"
-                className="font-medium text-gray-700 hover:text-green-600 transition duration-200"
-              >
-                About
-              </a>
-              {userAuthenticated && (
-                <a
-                  href="/orders"
-                  className="font-medium text-gray-700 hover:text-green-600 transition duration-200"
-                >
-                  My Orders
-                </a>
-              )}
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="relative hidden md:block">
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  className="bg-gray-100 rounded-full py-2 px-4 pl-10 w-64 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition duration-200"
-                />
-                <Search
-                  className="absolute left-3 top-2.5 text-gray-500"
-                  size={18}
-                />
+        ) : (
+          <div className="p-4 bg-green-50 border-b">
+            <div className="flex items-center space-x-3">
+              <div className="bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center">
+                <User size={20} className="text-gray-600" />
               </div>
-              <button className="text-gray-700 hover:text-green-600 transition duration-200">
-                {userAuthenticated ? (
-                  <a href="/profile">
-                    <User size={24} />
-                  </a>
-                ) : (
-                  <a href="/signin">
-                    <User size={24} />
-                  </a>
-                )}
-              </button>
-              <button className="text-gray-700 hover:text-green-600 transition duration-200">
-                <Heart size={24} />
-              </button>
-              <button className="relative text-gray-700 hover:text-green-600 transition duration-200">
-                <ShoppingCart size={24} />
-                <span className="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  3
-                </span>
-              </button>
+              <div className="flex space-x-2">
+                <a href="/signin" className="text-green-600 font-medium">Login</a>
+                <span className="text-gray-400">|</span>
+                <a href="/register" className="text-green-600 font-medium">Register</a>
+              </div>
             </div>
+          </div>
+        )}
+        
+        {/* Search */}
+        <div className="p-4 border-b">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="bg-gray-100 rounded-lg py-2 px-4 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition duration-200"
+            />
+            <Search className="absolute left-3 top-2.5 text-gray-500" size={18} />
+            <button className="absolute right-2 top-2 bg-green-600 text-white rounded px-3 py-1 text-sm">
+              Search
+            </button>
           </div>
         </div>
-      </header>
+        
+        {/* Main Navigation Links with Icons */}
+        <div className="py-2">
+          <a href="/" className="flex items-center px-4 py-3 hover:bg-gray-50">
+            <Home size={20} className="text-gray-500 mr-3" />
+            <span>Home</span>
+          </a>
+          
+          <a href="/shop" className="flex items-center justify-between px-4 py-3 hover:bg-gray-50">
+            <div className="flex items-center">
+              <ShoppingBag size={20} className="text-gray-500 mr-3" />
+              <span>Shop</span>
+            </div>
+            <ChevronRight size={16} className="text-gray-500" />
+          </a>
+          
+          <a href="/cart" className="flex items-center px-4 py-3 hover:bg-gray-50">
+            <ShoppingCart size={20} className="text-gray-500 mr-3" />
+            <span>Cart</span>
+            <span className="ml-auto bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              3
+            </span>
+          </a>
+          
+          {userAuthenticated && (
+            <a href="/orders" className="flex items-center px-4 py-3 hover:bg-gray-50">
+              <Package size={20} className="text-gray-500 mr-3" />
+              <span>My Orders</span>
+            </a>
+          )}
+          
+          {/* Categories with dropdown */}
+          <div className="border-t border-b my-2">
+            <button 
+              className="flex items-center justify-between w-full px-4 py-3 hover:bg-gray-50"
+              onClick={() => {/* Toggle categories dropdown */}}
+            >
+              <div className="flex items-center">
+                <List size={20} className="text-gray-500 mr-3" />
+                <span>Categories</span>
+              </div>
+              <ChevronDown size={16} className="text-gray-500" />
+            </button>
+            
+            {/* Categories dropdown items */}
+            <div className="bg-gray-50 px-4 py-2">
+              <a href="/category/electronics" className="block py-2 pl-8 text-gray-600 hover:text-green-600">
+                Electronics
+              </a>
+              <a href="/category/clothing" className="block py-2 pl-8 text-gray-600 hover:text-green-600">
+                Clothing
+              </a>
+              <a href="/category/home" className="block py-2 pl-8 text-gray-600 hover:text-green-600">
+                Home & Kitchen
+              </a>
+              <a href="/category/books" className="block py-2 pl-8 text-gray-600 hover:text-green-600">
+                Books
+              </a>
+            </div>
+          </div>
+          
+          {/* Help Center with dropdown */}
+          <div className="border-b">
+            <button 
+              className="flex items-center justify-between w-full px-4 py-3 hover:bg-gray-50"
+              onClick={() => {/* Toggle help dropdown */}}
+            >
+              <div className="flex items-center">
+                <HelpCircle size={20} className="text-gray-500 mr-3" />
+                <span>Help Center</span>
+              </div>
+              <ChevronDown size={16} className="text-gray-500" />
+            </button>
+            
+            {/* Help dropdown items */}
+            <div className="bg-gray-50 px-4 py-2">
+              <a href="/track-order" className="block py-2 pl-8 text-gray-600 hover:text-green-600">
+                Track Order
+              </a>
+              <a href="/shipping-policy" className="block py-2 pl-8 text-gray-600 hover:text-green-600">
+                Shipping & Delivery
+              </a>
+              <a href="/contact" className="block py-2 pl-8 text-gray-600 hover:text-green-600">
+                Contact Us
+              </a>
+              <a href="/faq" className="block py-2 pl-8 text-gray-600 hover:text-green-600">
+                FAQ
+              </a>
+            </div>
+          </div>
+          
+          {/* About Section */}
+          <a href="/about" className="flex items-center px-4 py-3 hover:bg-gray-50">
+            <Info size={20} className="text-gray-500 mr-3" />
+            <span>About</span>
+          </a>
+          
+          <a href="/deals" className="flex items-center px-4 py-3 hover:bg-gray-50">
+            <Tag size={20} className="text-gray-500 mr-3" />
+            <span>Deals</span>
+          </a>
+          
+          <a href="/wishlist" className="flex items-center px-4 py-3 hover:bg-gray-50">
+            <Heart size={20} className="text-gray-500 mr-3" />
+            <span>Wishlist</span>
+          </a>
+        </div>
+        
+        {/* Logout button at the very bottom */}
+        {userAuthenticated && (
+          <div className="p-4 mt-auto border-t">
+            <button
+              onClick={handleLogout}
+              className="flex items-center w-full text-red-600 hover:text-red-700"
+            >
+              <LogOut size={20} className="mr-3" />
+              <span>Logout</span>
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )}
+</header>
 
-      {/* Main content */}
+      {/* Main content section remains the same */}
       <main className="container mx-auto lg:px-16 px-2 py-8">
         {isLoading ? (
           <PageLoader />
