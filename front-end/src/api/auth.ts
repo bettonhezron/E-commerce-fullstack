@@ -26,6 +26,8 @@ export interface AuthResponse {
   };
 }
 
+
+
 // Authentication API calls
 export const login = (credentials: LoginCredentials) => 
   api.post<AuthResponse>('/auth/login', credentials);

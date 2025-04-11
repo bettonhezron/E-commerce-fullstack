@@ -341,7 +341,7 @@ const Homepage: React.FC = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  return (
+    return (
     <div className="bg-gray-50 min-h-screen">
     {/* Header */}
 <header className="bg-white shadow-sm sticky top-0 z-50">
